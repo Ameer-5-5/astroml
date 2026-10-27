@@ -618,21 +618,7 @@ python -m astroml.training.train_gcn
 ## 🔬 Research Goals
 
 AstroML emphasizes:
-
-- Reproducibility
-- Modular experimentation
-- Scalable ingestion
-- Temporal graph learning
-- Production-ready ML pipelines
-
----
-
-## 🛠 Tech Stack
-
-- Python
-- PyTorch / PyTorch Geometric
-- PostgreSQL
-- NetworkX / graph tooling
+graph tooling
 
 ---
 
@@ -661,10 +647,4 @@ Please open issues for bugs or feature requests.
 
 ## 📜 License
 
-MIT License
-Includes efficient density estimation methods including Kernel Density Estimation (KDE) and Gaussian Mixture Models.
-​Provides cross-validation and hyperparameter optimization routines optimized for high-dimensional sky catalogs.
-​Integrates seamless loading utilities for standard astronomical datasets like SDSS, LINEAR, and Kepler.
-​Offers dimensionality reduction algorithms including PCA and ICA tailored for stellar spectra classification.
-​Implements time-series analysis tools for light curve processing and periodic signal detection.
-​Includes publication-ready visualization scripts built on Matplotlib for common astronomical plots.
+MIT

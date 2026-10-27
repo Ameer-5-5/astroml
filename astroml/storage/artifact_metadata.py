@@ -1,4 +1,3 @@
-from astroml.utils.exceptions import AstroMLError
 """Enriched artifact metadata for model registry entries — issue #765.
 
 Attaches useful metadata on registration: framework and torch versions,
@@ -14,11 +13,14 @@ import hashlib
 import json
 import logging
 import os
+import subprocess
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from astroml.utils.exceptions import AstroMLError
 
 logger = logging.getLogger(__name__)
 
@@ -74,9 +76,7 @@ class ArtifactMetadata:
     git_commit: str | None = None
     training_config: dict[str, Any] | None = None
     custom: dict[str, Any] = field(default_factory=dict)
-    registered_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    registered_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise to a JSON-compatible dict."""
@@ -213,10 +213,14 @@ def infer_output_schema(model: Any, sample_input: Any = None) -> dict[str, Any] 
 
 
 def detect_git_commit() -> str | None:
-    """Detect the current git commit hash, if available."""
-    try:
-        import subprocess
+    """Detect the current git commit hash, if available.
 
+    Returns None rather than raising whenever git isn't usable in this
+    environment: not installed, not a git checkout, or the call times out
+    (#840 caught this catching the wrong exception type, which crashed
+    instead of degrading gracefully exactly when it needed to).
+    """
+    try:
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
             capture_output=True,
@@ -225,7 +229,7 @@ def detect_git_commit() -> str | None:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except AstroMLError:
+    except (OSError, subprocess.SubprocessError):
         pass
     return None
 
